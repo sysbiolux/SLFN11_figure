@@ -4,14 +4,8 @@ SLFN11 pan-cancer analysis
 This script:
 1. Downloads TCGA and GTEx expression data (Toil recompute)
 2. Extracts SLFN11 expression
-3. Generates a pan-cancer expression figure
+3. Generates expression figures
 
-Run simply with:
-
-python slfn11_analysis.py
-
-Output:
-results/slfn11_pan_cancer.png
 """
 
 import os
@@ -19,6 +13,8 @@ import gzip
 import requests
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 import matplotlib.pyplot as plt
 
 # -----------------------------
@@ -130,7 +126,7 @@ df = pd.DataFrame({
     "expr": tcga_expr.values
 })
 
-df["logexpr"] = np.log2(df["expr"] + 1)
+df["logexpr"] = df["expr"]
 
 df["sample_type"] = df["sample"].str[13:15]
 
@@ -161,7 +157,7 @@ gtex_df = pd.DataFrame({
     "expr": gtex_expr.values
 })
 
-gtex_df["logexpr"] = np.log2(gtex_df["expr"] + 1)
+gtex_df["logexpr"] = gtex_df["expr"]
 
 if "Sample" in gtex_pheno.columns:
     gtex_pheno = gtex_pheno.set_index("Sample")
@@ -174,8 +170,7 @@ gtex_df["tissue"] = gtex_pheno.loc[gtex_df["sample"], "body_site_detail (SMTSD)"
 # -----------------------------
 print("Generating figure (violin plot, TPM units, TCGA acronyms)")
 
-import numpy as np
-import matplotlib.pyplot as plt
+
 
 # -----------------------------
 # CONFIG
