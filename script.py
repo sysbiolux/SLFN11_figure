@@ -297,11 +297,12 @@ import seaborn as sns
 # CONFIG
 # -----------------------------
 MIN_N = 30
-X_FONTSIZE = 11
+X_FONTSIZE = 12
 OUTPNG = f"{OUTDIR}/slfn11_pan_cancer_violin_log2TPM.png"
 PANEL_COLOR = "#8ecae6"
 EDGE_COLOR = "#2f6f8f"
 GRID_COLOR = "#d7dce1"
+Y_AXIS_MIN = -5
 
 TCGA_ACRONYM = {
     "Adrenocortical Cancer": "ACC",
@@ -413,8 +414,8 @@ with sns.axes_style("whitegrid"):
     )
 
     ax.set_xlabel("")
-    ax.set_ylabel("SLFN11 expression (log2(TPM + 1e-3))", fontsize=16, labelpad=10)
-    ax.set_title("SLFN11 expression across TCGA cancers", fontsize=20, pad=18, weight="bold")
+    ax.set_ylabel("SLFN11 expression (log2(TPM + 1e-3))", fontsize=18, labelpad=12)
+    ax.set_ylim(bottom=Y_AXIS_MIN)
 
     for collection in ax.collections:
         collection.set_edgecolor(EDGE_COLOR)
@@ -425,7 +426,7 @@ with sns.axes_style("whitegrid"):
         line.set_linewidth(1.3)
 
     ax.tick_params(axis="x", labelsize=X_FONTSIZE, width=1.1, length=5)
-    ax.tick_params(axis="y", labelsize=13, width=1.1, length=5)
+    ax.tick_params(axis="y", labelsize=15, width=1.1, length=5)
     ax.grid(axis="y", color=GRID_COLOR, linewidth=0.9)
     ax.grid(axis="x", visible=False)
     sns.despine(ax=ax, top=True, right=True, left=False, bottom=False)
