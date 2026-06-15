@@ -14,8 +14,6 @@ import requests
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
-import matplotlib.pyplot as plt
 
 # -----------------------------
 # CONFIG
@@ -77,7 +75,6 @@ def extract_gene(matrix_path, gene):
             fields = line.split("\t")
             symbol_pre = fields[0].split("|")[0]
             symbol = symbol_pre.split(".")[0]
-            print(symbol)
 
             if symbol == gene:
 
@@ -294,16 +291,17 @@ print("Saved figure to", OUTPNG)
 
 print("Generating figure (seaborn violin, log2(TPM+1e-3) units, TCGA acronyms)")
 
-import numpy as np
-import matplotlib.pyplot as plt
 import seaborn as sns
 
 # -----------------------------
 # CONFIG
 # -----------------------------
 MIN_N = 30
-X_FONTSIZE = 7
+X_FONTSIZE = 11
 OUTPNG = f"{OUTDIR}/slfn11_pan_cancer_violin_log2TPM.png"
+PANEL_COLOR = "#8ecae6"
+EDGE_COLOR = "#2f6f8f"
+GRID_COLOR = "#d7dce1"
 
 TCGA_ACRONYM = {
     "Adrenocortical Cancer": "ACC",
@@ -398,26 +396,43 @@ order_acr = [TCGA_ACRONYM.get(c, c) for c in order_full]
 # -----------------------------
 # PLOT
 # -----------------------------
-plt.figure(figsize=(14, 8))
+with sns.axes_style("whitegrid"):
+    plt.figure(figsize=(17, 9))
 
-ax = sns.violinplot(
-    data=tumor,
-    x="cancer_acr",
-    y="logexpr",
-    order=order_acr,
-    cut=0,            # key: don't extend KDE beyond data range (fixes many "weird" tails)
-    inner="quartile", # quartile lines are more informative than just a median
-    linewidth=0.8,
-    scale="width"     # comparable violin widths
-)
+    ax = sns.violinplot(
+        data=tumor,
+        x="cancer_acr",
+        y="logexpr",
+        order=order_acr,
+        cut=0,            # key: don't extend KDE beyond data range (fixes many "weird" tails)
+        inner="quartile", # quartile lines are more informative than just a median
+        linewidth=1.2,
+        density_norm="width",    # comparable violin widths
+        color=PANEL_COLOR,
+        saturation=1
+    )
 
-ax.set_xlabel("")
-ax.set_ylabel("SLFN11 expression (log2(TPM + 1e-3))")
-ax.set_title("SLFN11 expression across TCGA cancers (tumor samples)")
+    ax.set_xlabel("")
+    ax.set_ylabel("SLFN11 expression (log2(TPM + 1e-3))", fontsize=16, labelpad=10)
+    ax.set_title("SLFN11 expression across TCGA cancers", fontsize=20, pad=18, weight="bold")
 
-plt.xticks(rotation=90, fontsize=X_FONTSIZE)
-plt.tight_layout()
-plt.savefig(OUTPNG, dpi=300)
+    for collection in ax.collections:
+        collection.set_edgecolor(EDGE_COLOR)
+        collection.set_alpha(0.95)
+
+    for line in ax.lines:
+        line.set_color("#1f2933")
+        line.set_linewidth(1.3)
+
+    ax.tick_params(axis="x", labelsize=X_FONTSIZE, width=1.1, length=5)
+    ax.tick_params(axis="y", labelsize=13, width=1.1, length=5)
+    ax.grid(axis="y", color=GRID_COLOR, linewidth=0.9)
+    ax.grid(axis="x", visible=False)
+    sns.despine(ax=ax, top=True, right=True, left=False, bottom=False)
+
+    plt.xticks(rotation=90, fontsize=X_FONTSIZE)
+    plt.tight_layout()
+    plt.savefig(OUTPNG, dpi=300)
 
 print("Saved figure to", OUTPNG)
 
@@ -476,7 +491,7 @@ ax = sns.violinplot(
     cut=0,
     inner="quartile",
     linewidth=0.8,
-    scale="width"
+    density_norm="width"
 )
 
 ax.set_xlabel("")
@@ -523,7 +538,7 @@ ax = sns.violinplot(
     cut=0,
     inner="quartile",
     linewidth=0.8,
-    scale="width"
+    density_norm="width"
 )
 
 ax.set_xlabel("")
@@ -613,7 +628,7 @@ ax = sns.violinplot(
     cut=0,
     inner="quartile",
     linewidth=0.8,
-    scale="width"
+    density_norm="width"
 )
 
 ax.set_xlabel("")
